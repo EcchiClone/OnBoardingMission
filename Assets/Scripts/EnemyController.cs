@@ -54,9 +54,9 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D col)
     {
-        if (other.gameObject.tag == "PlayerAttack")
+        if (col.gameObject.layer == LayerMask.NameToLayer("PlayerAttack"))
         {
             GetDamage(100);
         }

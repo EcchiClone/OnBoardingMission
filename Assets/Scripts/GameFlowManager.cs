@@ -84,7 +84,7 @@ public class GameFlowManager
     }
     public void GenPlayer()
     {
-        GameObject PlayerGameObject = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/Player"), _playerGenPosition, Quaternion.identity);
+        GameObject PlayerGameObject = MonoBehaviour.Instantiate(Resources.Load<GameObject>(DataIO.Paths["Player"]), _playerGenPosition, Quaternion.identity);
         _playerController = PlayerGameObject.GetComponent<PlayerController>();
     }
 

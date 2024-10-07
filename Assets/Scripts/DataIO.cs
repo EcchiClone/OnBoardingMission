@@ -7,6 +7,13 @@ public class DataIO
 {
     public static List<Enemy> EnemyDatas = new List<Enemy>();
 
+    public static Dictionary<string, string> Paths = new Dictionary<string, string>()
+    {
+        { "Player", "Prefabs/Player" },
+        { "PlayerAttackEffect", "Prefabs/PlayerAttackEffect" },
+        { "UICanvas", "Prefabs/UI/UICanvas" },
+    };
+
     public static string[] LinesReader(string filePath)
     {
         if (File.Exists(filePath))

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class UIManager
 {
-    string UICanvasPath = "Prefabs/UI/UICanvas";
+    string UICanvasPath = DataIO.Paths["UICanvas"];
     string UICanvasParentName = "[Canvas]";
     GameObject UICanvas;
     UICanvasMap UIMap;
