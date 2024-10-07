@@ -61,16 +61,17 @@ public class EnemyController : MonoBehaviour
             GetDamage(100);
         }
     }
-    void GetDamage(int damage)
+    public void GetDamage(int damage) // 테스트 끝나면 private로 바꾸기?
     {
         nowHp = Mathf.Max(nowHp - damage, 0);
         Managers.Instance.UI.UpdateHpBar(_enemyData.Health, nowHp);
-        if (nowHp < 0)
+        if (nowHp <= 0)
             Die();
     }
     void Die()
     {
         Managers.Instance.Flow.GenNextEnemy();
+        Destroy(gameObject);
     }
 
 }

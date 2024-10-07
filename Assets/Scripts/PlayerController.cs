@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class PlayerController : MonoBehaviour
     private float initDistance;
 
     bool _isMoving;
+
+    Collider2D[] colliders = new Collider2D[10];
 
     private void Awake()
     {
@@ -41,7 +44,7 @@ public class PlayerController : MonoBehaviour
 
     private void MoveToTarget()
     {
-        _attackTimer = Mathf.Min(_attackTimer + Time.deltaTime, _attackDelay * 1.05f);
+        _attackTimer = Mathf.Min(_attackTimer + Time.deltaTime, _attackDelay * 1.1f);
 
         if (_isMoving)
         {
@@ -63,7 +66,25 @@ public class PlayerController : MonoBehaviour
     }
     void Attack()
     {
-
+        if(_attackTimer > _attackDelay)
+        {
+            int numColliders = Physics2D.OverlapCircleNonAlloc(transform.position, 9f, colliders, layerMask: LayerMask.GetMask("Enemy"));
+            if (numColliders > 0)
+            {
+                Debug.Log(colliders[0].name);
+                if (colliders[0].TryGetComponent(out EnemyController enemyController))
+                {
+                    enemyController.GetDamage(100);
+                    _attackTimer -= _attackDelay;
+                }
+            }
+        }
     }
 
+}
+
+enum PlayerState
+{
+    Idle = 0,
+    Attacking = 1,
 }
