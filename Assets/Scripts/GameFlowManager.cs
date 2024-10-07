@@ -22,6 +22,10 @@ public class GameFlowManager
     }
     public GameResult GameResult { get { return _gameResult; } }
     public Enemy CurrentEnemy { get { return _currentEnemy; } }
+    PlayerController _playerController;
+    EnemyController _currentEnemyController;
+    public PlayerController PlayerController { get { return _playerController; } }
+    public EnemyController CurrentEnemyController { get { return _currentEnemyController; } }
 
 
     void UpdateState(GameState newState)
@@ -59,9 +63,13 @@ public class GameFlowManager
     {
         _gameState = GameState.Title;
         _maxEnemyCount = DataIO.EnemyDatas.Count;
-        _enemyCount = 0;
         _playerGenPosition = new Vector3(-10f, -5.6f, 0f);
         _enemyGenPosition = new Vector3(10f, -5.6f, 0f);
+        InitializeCommon();
+    }
+    public void InitializeCommon()
+    {
+        _enemyCount = 0;
     }
     public void InitializeLater()
     {
@@ -77,6 +85,7 @@ public class GameFlowManager
     public void GenPlayer()
     {
         GameObject PlayerGameObject = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/Player"), _playerGenPosition, Quaternion.identity);
+        _playerController = PlayerGameObject.GetComponent<PlayerController>();
     }
 
     public void GenNextEnemy()
@@ -92,7 +101,9 @@ public class GameFlowManager
 
         // 새 적 생성 및 데이터 세팅
         _currentEnemy = DataIO.EnemyDatas[_enemyCount];
+
         GameObject EnemyGameObject = MonoBehaviour.Instantiate(_currentEnemy.GameObject, _enemyGenPosition, Quaternion.identity);
+        _currentEnemyController = EnemyGameObject.GetComponent<EnemyController>();
 
         Managers.Instance.Action.InvokeOnEnemyGen(); // UI 업데이트 등
 
@@ -107,23 +118,28 @@ public class GameFlowManager
     public void Pause()
     {
         Debug.Log($"{MethodBase.GetCurrentMethod().Name}()");
+        Time.timeScale = 0f;
     }
     public void Resume()
     {
         Debug.Log($"{MethodBase.GetCurrentMethod().Name}()");
+        Time.timeScale = 1f;
     }
     public void Restart()
     {
         Debug.Log($"{MethodBase.GetCurrentMethod().Name}()");
+        // 특별히 할 건 없는 것 같다.
     }
     public void MoveToTitle()
     {
         Debug.Log($"{MethodBase.GetCurrentMethod().Name}()");
+        // 특별히 할 건 없는 것 같다.
     }
     // 보조 메서드
     public void ResetGameState()
     {
         Debug.Log($"{MethodBase.GetCurrentMethod().Name}()");
+        InitializeCommon();
     }
     public void SaveGameResult()
     {

@@ -7,13 +7,13 @@ public class EnemyController : MonoBehaviour
 {
     Enemy _enemyData;
 
-    int nowHp;
+    int _currentHp;
 
-    private Rigidbody2D rb;
+    private Rigidbody2D _rb;
 
-    private Vector2 targetPos;
-    private float initSpeed;
-    private float initDistance;
+    private Vector2 _targetPos;
+    private float _initSpeed;
+    private float _initDistance;
 
     private void Awake()
     {
@@ -22,13 +22,13 @@ public class EnemyController : MonoBehaviour
     public void Initialize()
     {
         _enemyData = Managers.Instance.Flow.CurrentEnemy;
-        nowHp = _enemyData.Health;
-        rb = GetComponent<Rigidbody2D>();
+        _currentHp = _enemyData.Health;
+        _rb = GetComponent<Rigidbody2D>();
 
         // 등장 연출 관련
-        targetPos = new Vector2(4, transform.position.y);
-        initSpeed = _enemyData.Speed * 5;
-        initDistance = Vector2.Distance(transform.position, targetPos);
+        _targetPos = new Vector2(4, transform.position.y);
+        _initSpeed = _enemyData.Speed * 5;
+        _initDistance = Vector2.Distance(transform.position, _targetPos);
 
     }
 
@@ -39,18 +39,18 @@ public class EnemyController : MonoBehaviour
 
     private void MoveToTarget()
     {
-        // initSpeed 속도로 시작하여 느려지며 특정 X좌표까지 이동
-        float distanceToTarget = Vector2.Distance(transform.position, targetPos);
+        // _initSpeed 속도로 시작하여 느려지며 특정 X좌표까지 이동
+        float distanceToTarget = Vector2.Distance(transform.position, _targetPos);
 
-        float speed = Mathf.Lerp(0, initSpeed, distanceToTarget / initDistance);
+        float speed = Mathf.Lerp(0, _initSpeed, distanceToTarget / _initDistance);
 
-        Vector2 direction = (targetPos - (Vector2)transform.position).normalized;
+        Vector2 direction = (_targetPos - (Vector2)transform.position).normalized;
 
-        rb.velocity = new Vector2(direction.x * speed, rb.velocity.y);
+        _rb.velocity = new Vector2(direction.x * speed, _rb.velocity.y);
 
         if (distanceToTarget < 0.1f)
         {
-            rb.velocity = Vector2.zero;
+            _rb.velocity = Vector2.zero;
         }
     }
 
@@ -63,15 +63,24 @@ public class EnemyController : MonoBehaviour
     }
     public void GetDamage(int damage) // 테스트 끝나면 private로 바꾸기?
     {
-        nowHp = Mathf.Max(nowHp - damage, 0);
-        Managers.Instance.UI.UpdateHpBar(_enemyData.Health, nowHp);
-        if (nowHp <= 0)
+        _currentHp = Mathf.Max(_currentHp - damage, 0);
+        Managers.Instance.UI.UpdateHpBar(_enemyData.Health, _currentHp);
+        if (_currentHp <= 0)
             Die();
     }
     void Die()
     {
         Managers.Instance.Flow.GenNextEnemy();
         Destroy(gameObject);
+    }
+
+    public Enemy GetEnemyData()
+    {
+        return _enemyData;
+    }
+    public int GetCurrentHp()
+    {
+        return _currentHp;
     }
 
 }

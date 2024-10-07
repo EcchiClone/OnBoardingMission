@@ -18,6 +18,7 @@ public class UIManager
     public void InitializeLater()
     {
         Managers.Instance.Action.OnEnemyGen += UpdateEnemyInfo;
+        Managers.Instance.Action.OnEnemyGen += UpdateHpBar;
         UpdatePanel(Managers.Instance.Flow.State);
     }
     public void UpdatePanel(GameState state)
@@ -34,5 +35,11 @@ public class UIManager
     public void UpdateHpBar(int maxHp, int currentHp)
     {
         UIMap.UpdateHpView(maxHp, currentHp);
+    }
+    public void UpdateHpBar()
+    {
+        UIMap.UpdateHpView(
+            Managers.Instance.Flow.CurrentEnemyController.GetEnemyData().Health,
+            Managers.Instance.Flow.CurrentEnemyController.GetCurrentHp() );
     }
 }

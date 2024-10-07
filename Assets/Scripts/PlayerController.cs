@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
 
         if (_isMoving)
         {
-            // initSpeed 속도로 시작하여 느려지며 특정 X좌표까지 이동
+            // _initSpeed 속도로 시작하여 느려지며 특정 X좌표까지 이동
             float distanceToTarget = Vector2.Distance(transform.position, targetPos);
 
             float speed = Mathf.Lerp(0, initSpeed, distanceToTarget / initDistance);
