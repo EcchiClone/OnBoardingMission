@@ -10,11 +10,11 @@ public class PlayerController : MonoBehaviour
 
     float _attackTimer;
 
-    private Rigidbody2D rb;
+    Rigidbody2D _rb;
 
-    private Vector2 targetPos;
-    private float initSpeed;
-    private float initDistance;
+    Vector2 _targetPos;
+    float _initSpeed;
+    float _initDistance;
 
     bool _isMoving;
 
@@ -29,15 +29,15 @@ public class PlayerController : MonoBehaviour
     }
     public void Initialize()
     {
-        rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
 
         // 등장 연출 관련
+        _rb = GetComponent<Rigidbody2D>();
         _isMoving = true;
         _animator.SetBool("isMoving", true);
-        targetPos = new Vector2(-4, transform.position.y);
-        initSpeed = 5f;
-        initDistance = Vector2.Distance(transform.position, targetPos);
+        _targetPos = new Vector2(-4, transform.position.y);
+        _initSpeed = 5f;
+        _initDistance = Vector2.Distance(transform.position, _targetPos);
         _attackEffectPrefab = Resources.Load<GameObject>(DataIO.Paths["PlayerAttackEffect"]);
 
     }
@@ -55,17 +55,17 @@ public class PlayerController : MonoBehaviour
         if (_isMoving)
         {
             // _initSpeed 속도로 시작하여 느려지며 특정 X좌표까지 이동
-            float distanceToTarget = Vector2.Distance(transform.position, Vector2.right * targetPos.x + Vector2.up * transform.position.y);
+            float distanceToTarget = Vector2.Distance(transform.position, Vector2.right * _targetPos.x + Vector2.up * transform.position.y);
 
-            float speed = Mathf.Lerp(0, initSpeed, distanceToTarget / initDistance);
+            float speed = Mathf.Lerp(0, _initSpeed, distanceToTarget / _initDistance) + 0.2f;
 
-            Vector2 direction = (targetPos - (Vector2)transform.position).normalized;
+            Vector2 direction = (_targetPos - (Vector2)transform.position).normalized;
 
-            rb.velocity = new Vector2(direction.x * speed + 0.2f, rb.velocity.y);
+            _rb.velocity = new Vector2(direction.x * speed, _rb.velocity.y);
 
             if (distanceToTarget < 0.1f)
             {
-                rb.velocity = Vector2.zero;
+                _rb.velocity = Vector2.zero;
                 _isMoving = false;
                 _animator.SetBool("isMoving", false);
             }
@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour
     {
         if(_attackTimer > _attackDelay)
         {
-            int numColliders = Physics2D.OverlapCircleNonAlloc(transform.position, 9f, colliders, layerMask: LayerMask.GetMask("Enemy"));
+            int numColliders = Physics2D.OverlapCircleNonAlloc(transform.position, 9.5f, colliders, layerMask: LayerMask.GetMask("Enemy"));
             if (numColliders > 0)
             {
                 StartCoroutine(IAttackWithDelayEffect());
@@ -88,7 +88,10 @@ public class PlayerController : MonoBehaviour
     {
         _animator.SetTrigger("doAttack");
         yield return new WaitForSeconds(0.5f);
-        Instantiate(_attackEffectPrefab, colliders[0].transform.position, Quaternion.identity, HierachyCategory.parentsDict["Entity"].transform);
+        if(colliders[0] != null)
+        {
+            Instantiate(_attackEffectPrefab, colliders[0].transform.position, Quaternion.identity, HierachyCategory.parentsDict["Entity"].transform);
+        }
     }
 
 }
@@ -96,5 +99,5 @@ public class PlayerController : MonoBehaviour
 enum PlayerState
 {
     Idle = 0,
-    Attacking = 1,
+    Attack = 1,
 }

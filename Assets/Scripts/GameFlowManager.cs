@@ -14,6 +14,7 @@ public class GameFlowManager
     GameResult _gameResult;
     Vector3 _playerGenPosition;
     Vector3 _enemyGenPosition;
+    public float Timer { get; set; }
 
     public GameState State
     {
@@ -26,7 +27,7 @@ public class GameFlowManager
     EnemyController _currentEnemyController;
     public PlayerController PlayerController { get { return _playerController; } }
     public EnemyController CurrentEnemyController { get { return _currentEnemyController; } }
-
+    public void UpdateTimer() { Timer += Time.deltaTime; }
 
     void UpdateState(GameState newState)
     {
@@ -70,6 +71,7 @@ public class GameFlowManager
     public void InitializeCommon()
     {
         _enemyCount = 0;
+        Timer = 0f;
     }
     public void InitializeLater()
     {
@@ -114,6 +116,7 @@ public class GameFlowManager
         Debug.Log($"{MethodBase.GetCurrentMethod().Name}()");
         SaveGameResult();
         ResetGameState();
+        Managers.Instance.Action.InvokeOnEndGame();
     }
     public void Pause()
     {
@@ -144,7 +147,7 @@ public class GameFlowManager
     public void SaveGameResult()
     {
         Debug.Log($"{MethodBase.GetCurrentMethod().Name}()");
-        _gameResult.ClearTime = 99.99f; // 임시지정
+        _gameResult.ClearTime = Timer;
     }
 }
 

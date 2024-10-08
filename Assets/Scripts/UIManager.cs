@@ -6,6 +6,7 @@ using UnityEngine;
 public class UIManager
 {
     string UICanvasPath = DataIO.Paths["UICanvas"];
+    string DamageCanvasPath = DataIO.Paths["DamageCanvas"];
     string UICanvasParentName = "[Canvas]";
     GameObject UICanvas;
     UICanvasMap UIMap;
@@ -19,6 +20,9 @@ public class UIManager
     {
         Managers.Instance.Action.OnEnemyGen += UpdateEnemyInfo;
         Managers.Instance.Action.OnEnemyGen += UpdateHpBar;
+
+        Managers.Instance.Action.OnEndGame += UpdateResultPanel;
+
         UpdatePanel(Managers.Instance.Flow.State);
     }
     public void UpdatePanel(GameState state)
@@ -36,10 +40,23 @@ public class UIManager
     {
         UIMap.UpdateHpView(maxHp, currentHp);
     }
+    public void UpdateResultPanel()
+    {
+        UIMap.UpdateResultInfoPanel();
+    }
     public void UpdateHpBar()
     {
         UIMap.UpdateHpView(
             Managers.Instance.Flow.CurrentEnemyController.GetEnemyData().Health,
             Managers.Instance.Flow.CurrentEnemyController.GetCurrentHp() );
+    }
+    public void PopupDamageSkin(int damage, Transform enemyTransform)
+    {
+        GameObject DamageCanvas = MonoBehaviour.Instantiate(Resources.Load<GameObject>(DamageCanvasPath), enemyTransform.position + Vector3.up * 4f, Quaternion.identity);
+        DamageCanvas.transform.SetParent(GameObject.Find(UICanvasParentName).transform);
+        if(DamageCanvas.TryGetComponent(out DamageCanvas damageCanvas))
+        {
+            damageCanvas.SetDamageText(damage);
+        }
     }
 }

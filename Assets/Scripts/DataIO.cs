@@ -12,6 +12,7 @@ public class DataIO
         { "Player", "Prefabs/Player" },
         { "PlayerAttackEffect", "Prefabs/PlayerAttackEffect" },
         { "UICanvas", "Prefabs/UI/UICanvas" },
+        { "DamageCanvas", "Prefabs/UI/DamageCanvas" },
     };
 
     public static string[] LinesReader(string filePath)
